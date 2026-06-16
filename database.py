@@ -134,19 +134,20 @@ def get_household_by_invite_code(invite_code: str) -> Optional[dict[str, Any]]:
 # --------------------------------------------------------------------------- #
 # Meal / swipe / match helpers
 # --------------------------------------------------------------------------- #
-# Hardcoded catalog (10 meals). Swap for TheMealDB later; meal_id values are
-# the string ids below and are stored as-is on swipes/matches.
+# Hardcoded catalog (10 meals). meal_id values are the string ids below and are
+# stored as-is on swipes/matches. Images are real photos hosted on Wikimedia
+# Commons (verified 200 / image/jpeg).
 MEALS: list[dict[str, Any]] = [
-    {"id": "1", "name": "Loco Moco", "description": "Rice topped with a hamburger patty, fried egg, and brown gravy.", "cuisine": "Hawaiian", "image_url": "https://images.mixedplate.app/loco-moco.jpg"},
-    {"id": "2", "name": "Chicken Katsu", "description": "Panko-crusted fried chicken cutlet with tonkatsu sauce.", "cuisine": "Japanese", "image_url": "https://images.mixedplate.app/chicken-katsu.jpg"},
-    {"id": "3", "name": "Kalua Pork", "description": "Slow-roasted shredded pork with smoky flavor.", "cuisine": "Hawaiian", "image_url": "https://images.mixedplate.app/kalua-pork.jpg"},
-    {"id": "4", "name": "Spam Musubi", "description": "Grilled Spam over rice wrapped in nori.", "cuisine": "Hawaiian", "image_url": "https://images.mixedplate.app/spam-musubi.jpg"},
-    {"id": "5", "name": "Beef Tacos", "description": "Seasoned ground beef in corn tortillas with salsa.", "cuisine": "Mexican", "image_url": "https://images.mixedplate.app/beef-tacos.jpg"},
-    {"id": "6", "name": "Margherita Pizza", "description": "Tomato, fresh mozzarella, and basil on a thin crust.", "cuisine": "Italian", "image_url": "https://images.mixedplate.app/margherita-pizza.jpg"},
-    {"id": "7", "name": "Pad Thai", "description": "Stir-fried rice noodles with shrimp, peanuts, and tamarind.", "cuisine": "Thai", "image_url": "https://images.mixedplate.app/pad-thai.jpg"},
-    {"id": "8", "name": "Chicken Tikka Masala", "description": "Grilled chicken in a creamy spiced tomato sauce.", "cuisine": "Indian", "image_url": "https://images.mixedplate.app/tikka-masala.jpg"},
-    {"id": "9", "name": "Bibimbap", "description": "Rice bowl with vegetables, beef, egg, and gochujang.", "cuisine": "Korean", "image_url": "https://images.mixedplate.app/bibimbap.jpg"},
-    {"id": "10", "name": "Cheeseburger", "description": "Grilled beef patty with cheese, lettuce, and tomato.", "cuisine": "American", "image_url": "https://images.mixedplate.app/cheeseburger.jpg"},
+    {"id": "1", "name": "Loco Moco", "description": "Rice topped with a hamburger patty, fried egg, and brown gravy.", "cuisine": "Hawaiian", "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Loco_moco_%2832605169782%29.jpg/960px-Loco_moco_%2832605169782%29.jpg"},
+    {"id": "2", "name": "Chicken Katsu", "description": "Panko-crusted fried cutlet with tonkatsu sauce.", "cuisine": "Japanese", "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/%22Amai-Yuwaku%22_Special_Loin_Pork_Cutlet1.jpg/960px-%22Amai-Yuwaku%22_Special_Loin_Pork_Cutlet1.jpg"},
+    {"id": "3", "name": "Kalua Pork", "description": "Slow-roasted shredded pork with smoky flavor.", "cuisine": "Hawaiian", "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Roasted_puaa.jpg/960px-Roasted_puaa.jpg"},
+    {"id": "4", "name": "Spam Musubi", "description": "Grilled Spam over rice wrapped in nori.", "cuisine": "Hawaiian", "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Homemade_Spam_Musubi.jpg/960px-Homemade_Spam_Musubi.jpg"},
+    {"id": "5", "name": "Beef Tacos", "description": "Seasoned beef in corn tortillas with salsa.", "cuisine": "Mexican", "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/001_Tacos_de_carnitas%2C_carne_asada_y_al_pastor.jpg/960px-001_Tacos_de_carnitas%2C_carne_asada_y_al_pastor.jpg"},
+    {"id": "6", "name": "Margherita Pizza", "description": "Tomato, fresh mozzarella, and basil on a thin crust.", "cuisine": "Italian", "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Pizza_Margherita_stu_spivack.jpg/960px-Pizza_Margherita_stu_spivack.jpg"},
+    {"id": "7", "name": "Pad Thai", "description": "Stir-fried rice noodles with shrimp, peanuts, and tamarind.", "cuisine": "Thai", "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Phat_Thai_kung_Chang_Khien_street_stall.jpg/960px-Phat_Thai_kung_Chang_Khien_street_stall.jpg"},
+    {"id": "8", "name": "Chicken Tikka Masala", "description": "Grilled chicken in a creamy spiced tomato sauce.", "cuisine": "Indian", "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Chicken_tikka_masala_%28cropped%29.jpg/960px-Chicken_tikka_masala_%28cropped%29.jpg"},
+    {"id": "9", "name": "Bibimbap", "description": "Rice bowl with vegetables, beef, egg, and gochujang.", "cuisine": "Korean", "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Dolsot-bibimbap.jpg/960px-Dolsot-bibimbap.jpg"},
+    {"id": "10", "name": "Cheeseburger", "description": "Grilled beef patty with cheese, lettuce, and tomato.", "cuisine": "American", "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Cheeseburger.jpg/960px-Cheeseburger.jpg"},
 ]
 
 
