@@ -50,6 +50,12 @@ app.add_middleware(
 # --------------------------------------------------------------------------- #
 # Auth helpers
 # --------------------------------------------------------------------------- #
+def _is_duplicate(message: str) -> bool:
+    """True if a Postgres error message indicates a unique-constraint conflict."""
+    m = message.lower()
+    return "duplicate key" in m or "23505" in m or "already exists" in m
+
+
 def _bearer_token(authorization: str) -> str:
     if not authorization.lower().startswith("bearer "):
         raise HTTPException(
@@ -138,7 +144,25 @@ def signup(body: SignupRequest):
     if res.user is None:
         raise HTTPException(status_code=400, detail="Signup failed.")
 
-    profile = db.create_user(res.user.id, body.email, body.name)
+    # Persist the application profile row. Surface DB problems (missing table,
+    # RLS blocking the anon key, duplicate account) as a clear message instead
+    # of a raw 500.
+    try:
+        profile = db.create_user(res.user.id, body.email, body.name)
+    except Exception as exc:
+        msg = str(exc)
+        if _is_duplicate(msg):
+            raise HTTPException(
+                status_code=409,
+                detail="An account with this email already exists. Try logging in.",
+            )
+        raise HTTPException(
+            status_code=502,
+            detail=(
+                "Could not save the user profile. Verify the database schema and "
+                f"Row Level Security policies are applied in Supabase. ({msg})"
+            ),
+        )
 
     if res.session is None:
         raise HTTPException(
