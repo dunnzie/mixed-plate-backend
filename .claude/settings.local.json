@@ -1,7 +1,20 @@
 {
   "permissions": {
     "allow": [
-      "Bash(flutter --version)"
+      "Bash(flutter --version)",
+      "Bash(git -C /home/des_mc/projects/mixed-plate log --oneline)",
+      "Bash(git -C /home/des_mc/projects/mixed-plate remote -v)",
+      "Bash(python3 -m venv .venv)",
+      "Bash(.venv/bin/pip install *)",
+      "Bash(.venv/bin/python3 -c \"import pydantic, pydantic_core; print\\('pydantic', pydantic.VERSION\\); print\\('pydantic_core', pydantic_core.__version__\\)\")",
+      "Bash(.venv/bin/pip freeze *)",
+      "Bash(.venv/bin/python3 *)",
+      "Bash(git add *)",
+      "Bash(git restore *)",
+      "Bash(git commit -q -m ' *)",
+      "Bash(git push *)",
+      "Bash(curl *)",
+      "Bash(exit 1)"
     ]
   }
 }
