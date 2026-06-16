@@ -23,6 +23,10 @@ class AuthResponse(BaseModel):
     user: "User"
 
 
+class MessageResponse(BaseModel):
+    message: str
+
+
 # ---------- User ----------
 class User(BaseModel):
     id: str
@@ -30,6 +34,13 @@ class User(BaseModel):
     name: str
     household_id: Optional[str] = None
     created_at: Optional[datetime] = None
+
+
+class UserPreferences(BaseModel):
+    user_id: str
+    dietary_restrictions: list[str] = Field(default_factory=list)
+    favorite_cuisines: list[str] = Field(default_factory=list)
+    updated_at: Optional[datetime] = None
 
 
 # ---------- Household ----------
@@ -47,6 +58,11 @@ class Household(BaseModel):
     invite_code: str
     created_by: str
     created_at: Optional[datetime] = None
+
+
+class InviteCodeResponse(BaseModel):
+    household_id: str
+    invite_code: str
 
 
 # ---------- Meal ----------
@@ -85,6 +101,13 @@ class Match(BaseModel):
     household_id: str
     meal_id: str
     created_at: Optional[datetime] = None
+
+
+# ---------- Health ----------
+class HealthResponse(BaseModel):
+    status: str
+    app: str
+    supabase_configured: bool
 
 
 # Resolve forward references.

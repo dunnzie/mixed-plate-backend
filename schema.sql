@@ -17,6 +17,13 @@ create table if not exists users (
     created_at timestamptz default now()
 );
 
+create table if not exists user_preferences (
+    user_id uuid primary key references users (id),
+    dietary_restrictions text[] default '{}',
+    favorite_cuisines text[] default '{}',
+    updated_at timestamptz default now()
+);
+
 create table if not exists meals (
     id uuid primary key default gen_random_uuid(),
     name text not null,
