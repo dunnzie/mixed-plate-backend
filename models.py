@@ -43,6 +43,11 @@ class UserPreferences(BaseModel):
     updated_at: Optional[datetime] = None
 
 
+class PreferencesUpdate(BaseModel):
+    dietary_restrictions: list[str] = Field(default_factory=list)
+    favorite_cuisines: list[str] = Field(default_factory=list)
+
+
 # ---------- Household ----------
 class HouseholdCreate(BaseModel):
     name: str

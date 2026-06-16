@@ -26,11 +26,13 @@ from models import (
     Match,
     Meal,
     MessageResponse,
+    PreferencesUpdate,
     SignupRequest,
     Swipe,
     SwipeCreate,
     SwipeResponse,
     User,
+    UserPreferences,
 )
 
 app = FastAPI(title="Mixed Plate", version="1.0.0")
@@ -171,6 +173,33 @@ def logout(authorization: str = Header(...)):
         # Even if the provider call fails, the client should drop the token.
         pass
     return MessageResponse(message="Logged out.")
+
+
+# --------------------------------------------------------------------------- #
+# Users
+# --------------------------------------------------------------------------- #
+@app.get("/users/me", response_model=User)
+def get_me(user: User = Depends(get_current_user)):
+    return user
+
+
+@app.get("/users/preferences", response_model=UserPreferences)
+def get_preferences(user: User = Depends(get_current_user)):
+    prefs = db.get_user_preferences(user.id)
+    if not prefs:
+        # No row yet — return sensible empty defaults rather than 404.
+        return UserPreferences(user_id=user.id)
+    return UserPreferences(**prefs)
+
+
+@app.put("/users/preferences", response_model=UserPreferences)
+def update_preferences(
+    body: PreferencesUpdate, user: User = Depends(get_current_user)
+):
+    prefs = db.upsert_user_preferences(
+        user.id, body.dietary_restrictions, body.favorite_cuisines
+    )
+    return UserPreferences(**prefs)
 
 
 # --------------------------------------------------------------------------- #
