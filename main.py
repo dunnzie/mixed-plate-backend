@@ -81,6 +81,20 @@ def get_current_user(authorization: str = Header(...)) -> User:
     return User(**profile)
 
 
+def get_optional_user(authorization: str | None = Header(default=None)) -> User | None:
+    """Resolve the user if a valid token is supplied, else None.
+
+    Never raises — used by endpoints that work anonymously but personalize when
+    the caller is signed in.
+    """
+    if not authorization:
+        return None
+    try:
+        return get_current_user(authorization)
+    except (HTTPException, RuntimeError):
+        return None
+
+
 def require_household(user: User) -> str:
     """Return the user's household id or raise if they have not joined one."""
     if not user.household_id:
@@ -237,9 +251,16 @@ def get_invite_code(user: User = Depends(get_current_user)):
 # 8. Meals
 # --------------------------------------------------------------------------- #
 @app.get("/meals", response_model=list[Meal])
-def get_meals():
-    # Static hardcoded catalog — no auth or Supabase required.
-    return [Meal(**m) for m in db.get_meals()]
+def get_meals(user: User | None = Depends(get_optional_user)):
+    # Static hardcoded catalog. When the caller is signed in and has favorite
+    # cuisines, surface those meals first (stable order otherwise).
+    meals = list(db.get_meals())
+    if user:
+        prefs = db.get_user_preferences(user.id) or {}
+        favorites = {c.lower() for c in prefs.get("favorite_cuisines", [])}
+        if favorites:
+            meals.sort(key=lambda m: (m.get("cuisine") or "").lower() not in favorites)
+    return [Meal(**m) for m in meals]
 
 
 # --------------------------------------------------------------------------- #
