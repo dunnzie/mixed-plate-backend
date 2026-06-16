@@ -77,6 +77,8 @@ class Meal(BaseModel):
     description: Optional[str] = None
     cuisine: Optional[str] = None
     image_url: Optional[str] = None
+    # Dietary labels this meal complies with, e.g. "vegetarian", "gluten_free".
+    dietary: list[str] = Field(default_factory=list)
 
 
 # ---------- Swipe ----------

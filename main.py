@@ -252,14 +252,25 @@ def get_invite_code(user: User = Depends(get_current_user)):
 # --------------------------------------------------------------------------- #
 @app.get("/meals", response_model=list[Meal])
 def get_meals(user: User | None = Depends(get_optional_user)):
-    # Static hardcoded catalog. When the caller is signed in and has favorite
-    # cuisines, surface those meals first (stable order otherwise).
+    # Static hardcoded catalog. When the caller is signed in we personalize:
+    #   1. exclude meals that violate any dietary restriction (hard filter)
+    #   2. surface favorite-cuisine meals first (stable order otherwise)
     meals = list(db.get_meals())
     if user:
         prefs = db.get_user_preferences(user.id) or {}
+
+        restrictions = {r.lower() for r in prefs.get("dietary_restrictions", [])}
+        if restrictions:
+            meals = [
+                m
+                for m in meals
+                if restrictions.issubset({d.lower() for d in m.get("dietary", [])})
+            ]
+
         favorites = {c.lower() for c in prefs.get("favorite_cuisines", [])}
         if favorites:
             meals.sort(key=lambda m: (m.get("cuisine") or "").lower() not in favorites)
+
     return [Meal(**m) for m in meals]
 
 
