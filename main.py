@@ -73,7 +73,7 @@ def get_current_user(authorization: str = Header(...)) -> User:
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token."
         )
 
-    profile = db.get_user_by_id(auth_user.user.id)
+    profile = db.get_user(auth_user.user.id)
     if not profile:
         raise HTTPException(status_code=404, detail="User profile not found.")
     return User(**profile)
@@ -122,7 +122,7 @@ def signup(body: SignupRequest):
     if res.user is None:
         raise HTTPException(status_code=400, detail="Signup failed.")
 
-    profile = db.create_user_profile(res.user.id, body.email, body.name)
+    profile = db.create_user(res.user.id, body.email, body.name)
 
     if res.session is None:
         raise HTTPException(
@@ -150,7 +150,7 @@ def login(body: LoginRequest):
     if res.user is None or res.session is None:
         raise HTTPException(status_code=401, detail="Invalid credentials.")
 
-    profile = db.get_user_by_id(res.user.id)
+    profile = db.get_user(res.user.id)
     if not profile:
         raise HTTPException(status_code=404, detail="User profile not found.")
 
@@ -196,7 +196,7 @@ def join_household(body: HouseholdJoin, user: User = Depends(get_current_user)):
 @app.get("/households/invite-code", response_model=InviteCodeResponse)
 def get_invite_code(user: User = Depends(get_current_user)):
     household_id = require_household(user)
-    household = db.get_household_by_id(household_id)
+    household = db.get_household(household_id)
     if not household:
         raise HTTPException(status_code=404, detail="Household not found.")
     return InviteCodeResponse(
@@ -208,8 +208,9 @@ def get_invite_code(user: User = Depends(get_current_user)):
 # 8. Meals
 # --------------------------------------------------------------------------- #
 @app.get("/meals", response_model=list[Meal])
-def get_meals(user: User = Depends(get_current_user)):
-    return [Meal(**m) for m in db.list_meals()]
+def get_meals():
+    # Static hardcoded catalog — no auth or Supabase required.
+    return [Meal(**m) for m in db.get_meals()]
 
 
 # --------------------------------------------------------------------------- #
