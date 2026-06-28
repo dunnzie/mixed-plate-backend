@@ -33,6 +33,8 @@ class User(BaseModel):
     email: EmailStr
     name: str
     household_id: Optional[str] = None
+    photo_url: Optional[str] = None
+    bio: Optional[str] = None
     created_at: Optional[datetime] = None
 
 
@@ -93,6 +95,7 @@ class Swipe(BaseModel):
     household_id: str
     meal_id: str
     liked: bool
+    direction: str = "right"
     created_at: Optional[datetime] = None
 
 
@@ -107,6 +110,8 @@ class Match(BaseModel):
     id: str
     household_id: str
     meal_id: str
+    matched_users: list[str] = Field(default_factory=list)
+    match_count: int = 1
     created_at: Optional[datetime] = None
 
 

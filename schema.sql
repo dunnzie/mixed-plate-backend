@@ -27,6 +27,8 @@ create table if not exists users (
     email text unique not null,
     name text not null,
     household_id uuid references households (id),
+    photo_url text,
+    bio text,
     created_at timestamptz default now()
 );
 
@@ -45,7 +47,7 @@ create table if not exists swipes (
     user_id uuid not null references users (id),
     household_id uuid not null references households (id),
     meal_id text not null,
-    liked boolean not null,
+    direction text default 'right',
     created_at timestamptz default now(),
     unique (user_id, meal_id)
 );
@@ -54,6 +56,8 @@ create table if not exists matches (
     id uuid primary key default gen_random_uuid(),
     household_id uuid not null references households (id),
     meal_id text not null,
+    matched_users uuid[] default '{}',
+    match_count int default 1,
     created_at timestamptz default now(),
     unique (household_id, meal_id)
 );

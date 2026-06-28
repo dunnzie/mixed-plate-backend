@@ -42,8 +42,10 @@ def get_user(user_id: str) -> Optional[dict[str, Any]]:
 
 def create_user(user_id: str, email: str, name: str) -> dict[str, Any]:
     profile = {"id": user_id, "email": email, "name": name}
-    get_supabase().table("users").insert(profile).execute()
-    return profile
+    result = get_supabase().table("users").insert(profile).execute()
+    if not result.data:
+        raise RuntimeError(f"Failed to insert user profile: no data returned from insert")
+    return result.data[0] if result.data else profile
 
 
 def set_user_household(user_id: str, household_id: str) -> None:
